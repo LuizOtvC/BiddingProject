@@ -33,8 +33,9 @@ public class UserController {
     
     @PostMapping("/logar")
     public String Logar(@RequestBody UserLogarBean user){
-        service.logar(user);
-        return "login sucedido";
+        return service.logar(user);
     }
+    
+    
     
 }

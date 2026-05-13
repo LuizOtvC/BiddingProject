@@ -21,6 +21,9 @@ public class UserService {
     @Autowired
     private UserDao service;
     
+    @Autowired
+    private TokenService tokenservice;
+    
     public void registrar(UserBean user){
         String mensagem = "";
         if(user.getNome().equals("")){
@@ -40,7 +43,7 @@ public class UserService {
         service.register(user);
     }
     
-    public UserBean logar(UserLogarBean user){
+    public String logar(UserLogarBean user){
         String mensagem = "";
         if(user.getEmail().equals("")){
             mensagem = "email não preenchido";
@@ -51,7 +54,11 @@ public class UserService {
             throw new ResponseStatusException(HttpStatusCode.valueOf(400), mensagem);
         }
         
-        return service.logar(user.getEmail(), user.getSenha());
+        UserBean Userlogar = service.logar(user.getEmail(), user.getSenha());
+        return tokenservice.gerarToken(Userlogar);
+        
         
     }
+    
+    
 }
