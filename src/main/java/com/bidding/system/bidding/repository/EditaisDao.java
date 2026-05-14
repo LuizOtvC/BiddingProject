@@ -7,8 +7,11 @@ package com.bidding.system.bidding.repository;
 import com.bidding.system.bidding.model.EditaisBean;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -18,7 +21,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class EditaisDao {
    
-    public void adicionarCondicao(EditaisBean edita){
+    public int adicionarCondicao(EditaisBean edita){
        try{
             Connection conn = Conexao.conectar();
             PreparedStatement stmt = null;
@@ -29,12 +32,36 @@ public class EditaisDao {
             stmt.setDate(3, edita.getData_fechamento());
             stmt.setString(4, edita.getStatus());
             
-            int linhasAfetadas = stmt.executeUpdate();
-            if (linhasAfetadas == 0) {
-                throw new SQLException("Falha na atualização: Nenhuma linha foi afetada.");
-            }
+            return stmt.executeUpdate();
         }catch(SQLException e){
             e.printStackTrace();
         } 
+       return 0;
+    }
+    
+    public List<EditaisBean> lerTodos(){
+        List<EditaisBean> dados = new ArrayList();
+        try{
+            Connection conn = Conexao.conectar();
+            PreparedStatement stmt = null;
+            ResultSet rs = null;
+            
+            stmt = conn.prepareStatement("SELECT * FROM editais");
+            rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                EditaisBean editais = new EditaisBean();
+                editais.setId(rs.getLong("id"));
+                editais.setTitulo(rs.getString("titulo"));
+                editais.setDescricao(rs.getString("descricao"));
+                editais.setData_fechamento(rs.getDate("data_fechamento"));
+                editais.setStatus(rs.getString("status"));
+                
+                dados.add(editais);
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+         return dados;   
     }
 }

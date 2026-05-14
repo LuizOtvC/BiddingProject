@@ -5,11 +5,10 @@
 package com.bidding.system.bidding.service;
 
 import com.bidding.system.bidding.model.EditaisBean;
+import com.bidding.system.bidding.model.LancesBean;
 import com.bidding.system.bidding.model.UserBean;
 import com.bidding.system.bidding.repository.EditaisDao;
-import com.bidding.system.bidding.repository.UserDao;
 import java.sql.Date;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -20,23 +19,21 @@ import org.springframework.web.server.ResponseStatusException;
  * @author Aluno
  */
 @Service
-public class EditaisService {
+public class LanceService {
     @Autowired
     private EditaisDao service;
     
     @Autowired
     private TokenService tokenservice;
     
-    
-    
-    public void adicionarCondicao(EditaisBean edita, String token){
-        UserBean usuariologado = tokenservice.extrairClaims(token);
-        Date data = edita.getData_fechamento();
+    public void adicionarlance(LancesBean edita, String token){
+        EditaisBean editaa = tokenservice.extrairClaimsEditais(token);
         String mensagem = "";
-        if(usuariologado.getRole().equals("COMPRADOR")){
-            if(edita.getTitulo().equals("")){
-            mensagem += "Titulo não identificado";
-        }else if(edita.getDescricao().equals("")){
+        Date data = edita.getData_lance();
+        if(editaa.getStatus().equals("ENCERRADO") || editaa.getData_fechamento().equals()){
+            if(edita.getValor() == 0){
+            mensagem += "Valor não encontrado";
+        }else if(edita.getData_lance().equals())){
             mensagem += "descrição não preenchido";
         }else if(data == null){
             mensagem += "data não preenchida";
@@ -57,12 +54,4 @@ public class EditaisService {
             throw new ResponseStatusException(HttpStatusCode.valueOf(403), "Acesso não autorizado");
         }
         }
-    
-    public List<EditaisBean> lerTodos(){
-        List<EditaisBean> linhas = service.lerTodos();
-        if(linhas.isEmpty()){
-            throw new ResponseStatusException(HttpStatusCode.valueOf(500), "Erro para encontrar o banco de dados");
-        }
-            return linhas;
-}
 }

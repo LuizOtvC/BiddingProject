@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
  * @author Aluno
  */
 public class EditaisBean {
-    private int id;
+    private Long id;
     private String titulo;
     private String descricao;
     private Date data_fechamento;
@@ -23,7 +23,7 @@ public class EditaisBean {
     public EditaisBean() {
     }
 
-    public EditaisBean(int id, String titulo, String descricao, Date data_fechamento, String status) {
+    public EditaisBean(Long id, String titulo, String descricao, Date data_fechamento, String status) {
         this.id = id;
         this.titulo = titulo;
         this.descricao = descricao;
@@ -31,11 +31,11 @@ public class EditaisBean {
         this.status = status;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -71,5 +71,5 @@ public class EditaisBean {
         this.status = status;
     }
 
-    
+  
 }
