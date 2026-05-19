@@ -64,4 +64,30 @@ public class EditaisDao {
         }
          return dados;   
     }
+    
+    public EditaisBean getById(Long id){
+        EditaisBean edital = new EditaisBean();
+        try{
+            Connection conn = Conexao.conectar();
+            PreparedStatement stmt = null;
+            ResultSet rs = null;
+            
+            stmt = conn.prepareStatement("SELECT data_fechamento, status FROM editais where id = ?");
+            stmt.setLong(1, id);
+            
+            rs = stmt.executeQuery();
+            if(rs.next()){
+                edital.setId(rs.getLong("id"));
+                edital.setTitulo(rs.getString("titulo"));
+                edital.setDescricao(rs.getString("descricao"));
+                edital.setData_fechamento(rs.getDate("data_fechamento"));
+                edital.setStatus(rs.getString("status"));
+                
+                
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return edital;
+    }
 }

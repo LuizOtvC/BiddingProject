@@ -16,21 +16,21 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public class LancesDao {
-    public int adicionarLance(LancesBean lances){
+    public void adicionarLance(Long id, LancesBean lance, String token){
        try{
             Connection conn = Conexao.conectar();
             PreparedStatement stmt = null;
             
             stmt = conn.prepareStatement("INSERT INTO lances (valor, data_lance, id_edital, id_usuario) VALUES (?, ?, ?, ?)");
-            stmt.setDouble(1, lances.getValor());
-            stmt.setDate(2, lances.getData_lance());
-            stmt.setLong(3, lances.getId_edital());
-            stmt.setLong(4, lances.getId_usuario());
+            stmt.setDouble(1, lance.getValor());
+            stmt.setDate(2, lance.getData_lance());
+            stmt.setLong(3, lance.getId_edital());
+            stmt.setLong(4, lance.getId_usuario());
             
-            return stmt.executeUpdate();
+            stmt.executeUpdate();
         }catch(SQLException e){
             e.printStackTrace();
         }
-       return 0;
+       
     }
 }
