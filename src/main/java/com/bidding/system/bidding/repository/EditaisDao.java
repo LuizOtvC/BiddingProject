@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,7 +22,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class EditaisDao {
    
-    public int adicionarCondicao(EditaisBean edita){
+    public int adicionarEdital(EditaisBean edita){
        try{
             Connection conn = Conexao.conectar();
             PreparedStatement stmt = null;
@@ -29,7 +30,7 @@ public class EditaisDao {
             stmt = conn.prepareStatement("INSERT INTO editais (titulo, descricao, data_fechamento, status) VALUES (?, ?, ?, ?)");
             stmt.setString(1, edita.getTitulo());
             stmt.setString(2, edita.getDescricao());
-            stmt.setDate(3, edita.getData_fechamento());
+            stmt.setTimestamp(3, Timestamp.valueOf(edita.getData_fechamento()));
             stmt.setString(4, edita.getStatus());
             
             return stmt.executeUpdate();
@@ -54,7 +55,7 @@ public class EditaisDao {
                 editais.setId(rs.getLong("id"));
                 editais.setTitulo(rs.getString("titulo"));
                 editais.setDescricao(rs.getString("descricao"));
-                editais.setData_fechamento(rs.getDate("data_fechamento"));
+                editais.setData_fechamento(rs.getTimestamp("data_fechamento").toLocalDateTime());
                 editais.setStatus(rs.getString("status"));
                 
                 dados.add(editais);
@@ -80,7 +81,7 @@ public class EditaisDao {
                 edital.setId(rs.getLong("id"));
                 edital.setTitulo(rs.getString("titulo"));
                 edital.setDescricao(rs.getString("descricao"));
-                edital.setData_fechamento(rs.getDate("data_fechamento"));
+                edital.setData_fechamento(rs.getTimestamp("data_fechamento").toLocalDateTime());
                 edital.setStatus(rs.getString("status"));
                 
                 

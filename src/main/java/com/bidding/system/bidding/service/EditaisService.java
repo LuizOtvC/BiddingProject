@@ -7,9 +7,10 @@ package com.bidding.system.bidding.service;
 import com.bidding.system.bidding.model.EditaisBean;
 import com.bidding.system.bidding.model.UserBean;
 import com.bidding.system.bidding.repository.EditaisDao;
-import com.bidding.system.bidding.repository.UserDao;
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -29,40 +30,56 @@ public class EditaisService {
     
     
     
-    public void adicionarCondicao(EditaisBean edita, String token){
-        UserBean usuariologado = tokenservice.extrairClaims(token);
-        Date data = edita.getData_fechamento();
-        String mensagem = "";
-        if(usuariologado.getRole().equals("COMPRADOR")){
-            if(edita.getTitulo().equals("")){
-            mensagem += "Titulo não identificado";
-        }else if(edita.getDescricao().equals("")){
-            mensagem += "descrição não preenchido";
-        }else if(data == null){
-            mensagem += "data não preenchida";
-        }else if(edita.getStatus().equals("")){
-            mensagem += "não identificado";
-        }
-        
-        if(!mensagem.equals("")){
-            throw new ResponseStatusException(HttpStatusCode.valueOf(400), mensagem);
-        }
-        
-        edita.setStatus("ABERTO");
-        int linhas = service.adicionarCondicao(edita);
-        if(linhas == 0){
-            throw new ResponseStatusException(HttpStatusCode.valueOf(500), "Erro ao cadastrar ao banco de dados");
-        }     
-    }else{
-            throw new ResponseStatusException(HttpStatusCode.valueOf(403), "Acesso não autorizado");
-        }
-        }
     
-    public List<EditaisBean> lerTodos(){
-        List<EditaisBean> linhas = service.lerTodos();
-        if(linhas.isEmpty()){
-            throw new ResponseStatusException(HttpStatusCode.valueOf(500), "Erro para encontrar o banco de dados");
+    
+    public List<EditaisBean> lerTodos(String authHeader, boolean urgente){
+         if (!tokenservice.validarToken(authHeader)) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(401), "Token inválido!");
         }
+        List<EditaisBean> linhas = service.lerTodos();
+        
+        if (!urgente) {
             return linhas;
-}
+        }
+        LocalDateTime agora = LocalDateTime.now();
+        LocalDateTime limite = agora.plusHours(48);
+
+        return linhas.stream()
+                .filter(edital -> "ABERTO".equalsIgnoreCase(edital.getStatus()))
+                .filter(edital -> edital.getData_fechamento() != null)
+                .filter(edital -> {
+                    LocalDateTime fechamento = edital.getData_fechamento();
+
+                    return fechamento.isAfter(agora)
+                            && fechamento.isBefore(limite);
+                })
+                .collect(Collectors.toList());
+    }
+    
+     public void novoEdital(EditaisBean edital, UserBean usuarioLogado) {
+        String message = "";
+        if (!usuarioLogado.getRole().equals("COMPRADOR")) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(403),
+                    "Acesso negado: apenas usuários com role COMPRADOR podem criar editais"
+            );
+        }
+        if (edital.getTitulo().isEmpty()) {
+            message += "Título não preenchido!";
+        }
+        if (edital.getDescricao().isEmpty()) {
+            message += "Descrição não preenchida!";
+        }
+        if (edital.getData_fechamento() == null) {
+            message += "Data não preenchida!";
+        }
+        if (!message.isEmpty()) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(400), message);
+        }
+        edital.setStatus("ABERTO");
+        int rows = service.adicionarEdital(edital);
+        if (rows == 0) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(500),
+                    "Erro ao criar edital");
+        }
+    }
 }

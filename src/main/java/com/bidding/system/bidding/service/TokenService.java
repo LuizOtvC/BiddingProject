@@ -82,22 +82,6 @@ public class TokenService {
 
 }
     
-    public EditaisBean extrairClaimsEditais(String token) {
-            Claims claim = Jwts.parser()
-            .verifyWith(this.getKeySign())
-            .build()
-            .parseSignedClaims(token)
-            .getPayload();
-            
-            
-            EditaisBean lance = new EditaisBean();
-            lance.setId(claim.get("id", Long.class));
-            lance.setStatus(claim.get("status", String.class));
-           Long timestamp = claim.get("data", Long.class);
-            if (timestamp != null) {
-            lance.setData_fechamento(new java.sql.Date(timestamp));
-}
-            return lance;
+    
 
-}
 }

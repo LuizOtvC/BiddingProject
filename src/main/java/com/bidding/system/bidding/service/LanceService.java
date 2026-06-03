@@ -9,6 +9,7 @@ import com.bidding.system.bidding.model.LancesBean;
 import com.bidding.system.bidding.model.UserBean;
 import com.bidding.system.bidding.repository.EditaisDao;
 import java.sql.Date;
+import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -26,8 +27,7 @@ public class LanceService {
     @Autowired
     private TokenService tokenservice;
     
-    @Autowired
-    private LancesBean lance;
+    
     
     public void adicionarlance(Long id, LancesBean edita, String token){
         if(tokenservice.validarToken(token)){
@@ -43,7 +43,7 @@ public class LanceService {
                 throw new ResponseStatusException(HttpStatusCode.valueOf(400), "nao pode se crair lances para um edital fechado");
             }
             
-            if(edital.getData_fechamento().before(lance.getData_lance()) ){
+            if(LocalDateTime.now().isAfter(edital.getData_fechamento()) ){
                 throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Data do lance posterior ao fechamento");
                 
             }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -42,16 +43,17 @@ public class EditalController {
     @PostMapping("/inserir")
     public String cadastrarEdital(@RequestHeader("Authorization") String auth, @RequestBody EditaisBean edital){
         String token = auth.replace("Bearer ", "");
-        service.adicionarCondicao(edital, token);
+        UserBean usuarioLogado = serviceToken.extrairClaims(token);
+        service.novoEdital(edital, usuarioLogado);
         return "edital cadastrado com sucesso";
         
         
     }
     @GetMapping("/listar")
-    public List<EditaisBean> lerTodos(@RequestHeader("Authorization") String auth){
+    public List<EditaisBean> lerTodos(@RequestHeader("Authorization") String auth, @RequestParam(value = "urgente", required = false, defaultValue = "false") boolean urgente){
         String token = auth.replace("Bearer ", "");
         serviceToken.validarToken(token);
-        return service.lerTodos();   
+        return service.lerTodos(token, urgente);   
   
     }
     
