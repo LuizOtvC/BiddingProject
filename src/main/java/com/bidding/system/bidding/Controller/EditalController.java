@@ -57,7 +57,7 @@ public class EditalController {
   
     }
     
-    @PostMapping("/{id}/lances")
+    @PostMapping("/{id}/lance")
     public String registarLance(@RequestHeader("Authorization") String auth, @RequestBody LancesBean lance, @PathVariable long id){
         String token = auth.replace("Bearer", "");
         serviceLance.adicionarlance(id, lance, token);
