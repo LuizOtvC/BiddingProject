@@ -13,6 +13,7 @@ import com.bidding.system.bidding.service.TokenService;
 import com.bidding.system.bidding.service.UserService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,11 +58,13 @@ public class EditalController {
   
     }
     
-    @PostMapping("/{id}/lance")
-    public String registarLance(@RequestHeader("Authorization") String auth, @RequestBody LancesBean lance, @PathVariable long id){
-        String token = auth.replace("Bearer", "");
-        serviceLance.adicionarlance(id, lance, token);
-        return "Lance Registrado com sucesso";
+    
+    
+    @GetMapping("/listar/{id}")
+    public ResponseEntity<EditaisBean> getEdital(@RequestHeader("Authorization") String auth, @PathVariable Long id) {
+        String token = auth.replace("Bearer ", "");
+    EditaisBean edital = service.getById(token, id);
+    return ResponseEntity.ok(edital);
     }
     
 }

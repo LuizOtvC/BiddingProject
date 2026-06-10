@@ -82,4 +82,14 @@ public class EditaisService {
                     "Erro ao criar edital");
         }
     }
+     public EditaisBean getById(String token, Long id) {
+    if (!tokenservice.validarToken(token)) {
+        throw new ResponseStatusException(HttpStatusCode.valueOf(401), "Token inválido!");
+    }
+    EditaisBean edital = service.getById(id);
+    if (edital.getId() == null) {
+        throw new ResponseStatusException(HttpStatusCode.valueOf(404), "Edital não encontrado!");
+    }
+    return edital;
+}
 }

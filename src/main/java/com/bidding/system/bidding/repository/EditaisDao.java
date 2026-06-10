@@ -73,7 +73,7 @@ public class EditaisDao {
             PreparedStatement stmt = null;
             ResultSet rs = null;
             
-            stmt = conn.prepareStatement("SELECT data_fechamento, status FROM editais where id = ?");
+            stmt = conn.prepareStatement("SELECT id, titulo, descricao, data_fechamento, status FROM editais WHERE id = ?");
             stmt.setLong(1, id);
             
             rs = stmt.executeQuery();

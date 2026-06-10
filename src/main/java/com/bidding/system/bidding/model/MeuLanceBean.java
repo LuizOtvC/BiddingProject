@@ -11,26 +11,28 @@ import java.time.LocalDateTime;
  *
  * @author Aluno
  */
-public class LancesBean {
-    private Long id;
+public class MeuLanceBean {
+    private Long id;       
     private double valor;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime data_lance;
+    private LocalDateTime data_lance; 
     private Long id_edital;
-    private Long id_usuario;
+    private String titulo;
+    private String status;
+    private boolean vencedor;
 
-    public LancesBean() {
+    public MeuLanceBean() {
     }
 
-    public LancesBean(Long id, double valor, LocalDateTime data_lance, Long id_edital, Long id_usuario) {
+    public MeuLanceBean(Long id, double valor, LocalDateTime data_lance, Long id_edital, String titulo, String status, boolean vencedor) {
         this.id = id;
         this.valor = valor;
         this.data_lance = data_lance;
         this.id_edital = id_edital;
-        this.id_usuario = id_usuario;
+        this.titulo = titulo;
+        this.status = status;
+        this.vencedor = vencedor;
     }
-
-    
 
     public Long getId() {
         return id;
@@ -56,7 +58,6 @@ public class LancesBean {
         this.data_lance = data_lance;
     }
 
-
     public Long getId_edital() {
         return id_edital;
     }
@@ -65,12 +66,28 @@ public class LancesBean {
         this.id_edital = id_edital;
     }
 
-    public Long getId_usuario() {
-        return id_usuario;
+    public String getTitulo() {
+        return titulo;
     }
 
-    public void setId_usuario(Long id_usuario) {
-        this.id_usuario = id_usuario;
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public boolean isVencedor() {
+        return vencedor;
+    }
+
+    public void setVencedor(boolean vencedor) {
+        this.vencedor = vencedor;
     }
     
     
